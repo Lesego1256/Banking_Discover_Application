@@ -43,8 +43,8 @@ public class ClientAccount implements Serializable {
 
     @Column(name = "DISPLAY_BALANCE")
     private double displayBalance;
-    
-
+    @Column(name="RAND_VALUE")
+    private double randValue;
 
 
     public static long getSerialVersionUID() {
@@ -99,5 +99,11 @@ public class ClientAccount implements Serializable {
         this.displayBalance = displayBalance;
     }
 
+    public double getRandValue() {
+        return randValue;
+    }
 
+    public void setRandValue(double randValue) {
+        this.randValue = randValue;
+    }
 }

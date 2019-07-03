@@ -117,7 +117,7 @@ public class AccountServices {
 
 
     ///////////////////////
-    public List<ClientAccount> getForCurrenyAccounts(int id) {
+    public List<ClientAccount> getForCurrenyAccounts(int id){
         List<Double> currencyBalanceExchanged =new ArrayList<>();
 
         List<ClientAccount> accountsCurrency = new ArrayList<>();
@@ -136,7 +136,9 @@ public class AccountServices {
 //                        currencyBalanceExchanged.add(i,total);
 //                        System.out.println("Rate : " + accounts.get(i).getCurrency().getCurrencyCode().getRate());
 //                        currencyRate.add(i,accounts.get(i).getCurrency().getCurrencyCode().getRate());
+                    accounts.get(i).setRandValue(total);
                     accountsCurrency.add(accounts.get(i));
+
                     System.out.println(" -  - - -  - - -  - - -  - - -  - - - - - - - - - -  - - - - - - - - ");
                             System.out.println("Account No : " + accounts.get(i).getClientAccountNumber());
                     System.out.println("Current Balance : R " + accounts.get(i).getDisplay_balance());
@@ -148,7 +150,10 @@ public class AccountServices {
                 if (accounts.get(i).getCurrency().getCurrencyCode().getConversionIndicator().equalsIgnoreCase("*")) {
                     double total = accounts.get(i).getDisplay_balance() * accounts.get(i).getCurrency().getCurrencyCode().getRate();
 
+                    accounts.get(i).setRandValue(total);
                     accountsCurrency.add(accounts.get(i));
+
+
                     //currencyBalanceExchanged.add(i,total);
                     System.out.println(" -  - - -  - - -  - - -  - - -  - - - - - - - - - -  - - - - - - - - ");
                     System.out.println("Account No : " + accounts.get(i).getClientAccountNumber());
@@ -156,11 +161,25 @@ public class AccountServices {
                     System.out.println("Conversion Rate : " + accounts.get(i).getCurrency().getCurrencyCode().getRate());
                     System.out.println("Convert : R " + total);
                     System.out.println(" -  - - -  - - -  - - -  - - -  - - - - - - - - - -  - - - - - - - - ");
+
                 }
             }
         }
+        //To sort based on the calculated rand value!
+        accountsCurrency = sortCurrencylAccs(accountsCurrency);
+
 
         return accountsCurrency;
+    }
+
+    public List<ClientAccount> sortCurrencylAccs(List<ClientAccount> accounts)
+    {
+
+        System.out.println("In side sort method");
+        List<ClientAccount> sortAccounts = accounts.stream()
+                .sorted(Comparator.comparing(ClientAccount::getRandValue).reversed())
+                .collect(Collectors.toList());
+        return sortAccounts;
     }
 
 
@@ -168,18 +187,6 @@ public class AccountServices {
 
 
 
-//    public List<ClientAccount> sortCurrencylAccs(List<ClientAccount> accounts, double randValue)
-//    {
-////        List<ClientAccount> sortAccounts = accounts.stream()
-////                .sorted(Comparator.comparing(ClientAccount::getDisplay_balance))
-////                .collect(Collectors.toList());
-//
-//        System.out.println("In side sort method");
-//        List<ClientAccount> sortAccounts = accounts.stream()
-//                .sorted(Comparator.comparing(ClientAccount::getDisplay_balance).reversed())
-//                .collect(Collectors.toList());
-//        return sortAccounts;
-//    }
 
 
 
@@ -194,9 +201,7 @@ public class AccountServices {
 
 
 
-
-
-    public ClientAccount makeWithDrawal(int atm_id, int client_id, String account, Timestamp date, double amount) {
+    public ClientAccount makeWithDrawal(int atm_id, int client_id, String account,double amount) {
         ClientAccount clientAccountCl = client.findByClientAccountNumberAndClient_ClientId(account, client_id);
 
         Atm atm = atmRepo.findById(atm_id).get();
@@ -256,19 +261,35 @@ public class AccountServices {
             {
                 locationsAtm.add(locations.get(i));
                 //locationsAtm.get(i).getDenomination().
-
-
             }
         }
-
-
-
-
-        //List<Denomination> denoForATM = atmAllocation.getDenomination().;
 
         return false;
     }
 
+
+    public boolean getStatusOfAtmNotes200(List<AtmAllocation> atmAllocations, double amount)
+    {
+        boolean status = false;
+        for(int i = 0; i<atmAllocations.size();i++)
+        {
+            if(atmAllocations.get(i).getDenomination().getValue() == 200)
+            {
+                double cashAtm200 = 200 * atmAllocations.get(i).getCount();
+
+                if(cashAtm200 % amount == 0)
+                {
+                    status = true;
+                    break;
+                }
+            }
+
+
+        }
+
+
+        return status;
+    }
 
 }
 
