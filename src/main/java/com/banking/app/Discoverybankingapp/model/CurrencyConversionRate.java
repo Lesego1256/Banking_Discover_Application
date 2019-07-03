@@ -24,11 +24,7 @@ public class CurrencyConversionRate implements Serializable {
     @Column(name="CURRENCY_CODE")
     private String currencyCode;
     
-    //PK plus FK
-//    @OneToOne
-//    @JoinColumn
-//    @MapsId
-//    private Currency currency;
+
 
     @Column(name="CONVERSION_INDICATOR")
     private String conversionIndicator;

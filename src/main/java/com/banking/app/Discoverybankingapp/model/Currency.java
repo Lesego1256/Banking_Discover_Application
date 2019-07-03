@@ -21,15 +21,16 @@ public class Currency implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @Column(name="CURRENCY_CODE")
-    private String currencyCode;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name ="CURRENCY_CODE", nullable = false,referencedColumnName = "CURRENCY_CODE")
+    private CurrencyConversionRate currencyCode;
+
     @Column(name="DECIMAL_PLACES")
     private Double decimalPlaces;
     @Column(name="DESCRIPTION")
     private String description;
-    
 
-    
+
 
 
     public static long getSerialVersionUID() {
@@ -37,6 +38,13 @@ public class Currency implements Serializable {
     }
 
 
+    public CurrencyConversionRate getCurrencyCode() {
+        return currencyCode;
+    }
+
+    public void setCurrencyCode(CurrencyConversionRate currencyCode) {
+        this.currencyCode = currencyCode;
+    }
 
     public String getDescription() {
         return description;
@@ -46,13 +54,7 @@ public class Currency implements Serializable {
         this.description = description;
     }
 
-    public String getCurrencyCode() {
-        return currencyCode;
-    }
 
-    public void setCurrencyCode(String currencyCode) {
-        this.currencyCode = currencyCode;
-    }
 
     public Double getDecimalPlaces() {
         return decimalPlaces;

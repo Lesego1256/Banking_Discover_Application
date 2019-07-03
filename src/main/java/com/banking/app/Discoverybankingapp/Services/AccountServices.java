@@ -32,7 +32,12 @@ public class AccountServices {
     @Autowired
     private CurrencyConversionRateServices currencyConversionRateServices;
 
+    public List<ClientAccount> getAllTransactionalAccs(int id) {
 
+        return client.findAllByClient_ClientId(id);
+    }
+
+    //Used
     //Get a list of all transactional account from a users
     public List<ClientAccount> getAllAccountsForUserT(int id) {
         List<ClientAccount> transactionAccounts = new ArrayList<>();
@@ -55,6 +60,10 @@ public class AccountServices {
 
     }
     //To sort the accounts in ascending
+    //Used
+
+
+
     public List<ClientAccount> sortTransactionalAccs(List<ClientAccount> accounts)
     {
 //        List<ClientAccount> sortAccounts = accounts.stream()
@@ -74,58 +83,114 @@ public class AccountServices {
 
 
 
-    public List<ClientAccount> getAllTransactionalAccs(int id) {
-
-        return client.findAllByClient_ClientId(id);
-    }
 
 
-    public HashMap getCurrencyValueWithAccounts(int id) {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ///////////////////////
+    public List<ClientAccount> getForCurrenyAccounts(int id) {
         List<Double> currencyBalanceExchanged =new ArrayList<>();
-        List<Double> currencyRate =new ArrayList<>();
-        //To get the List for the account mapping
-        HashMap map = new HashMap();
 
-        List<CurrencyConversionRate> currencyConversionRates = currencyConversionRateServices.getListCurrencyRateList();
+        List<ClientAccount> accountsCurrency = new ArrayList<>();
 
-        List<ClientAccount> accounts = getAllAccountsForUserT(id);
+        List<ClientAccount> accounts = getAllTransactionalAccs(id);
 
-        //accounts.get(0).getCurrency().getCurrencyCode();
 
-        for(int i = 0; i<accounts.size();i++)
-        {
-            for(int j = 0; j< currencyConversionRates.size(); j++)
-            {
-                //Testing if the accounts currency code maps the currency conversion code
-                if(accounts.get(i).getCurrency().getCurrencyCode().equalsIgnoreCase(currencyConversionRates.get(j).getCurrencyCode()))
-                {
-                    //Calculate the rate based on the ConversionIndicator
-                    if(currencyConversionRates.get(j).getConversionIndicator().equalsIgnoreCase("/"))
-                    {
-                        double total =  accounts.get(i).getDisplay_balance() / currencyConversionRates.get(j).getRate();
-                        currencyBalanceExchanged.add(i,total);
-                        System.out.println("Rate : " + currencyConversionRates.get(j).getRate());
-                        currencyRate.add(i,currencyConversionRates.get(j).getRate());
-                        break;
-                    }
-                    else if (currencyConversionRates.get(j).getConversionIndicator().equalsIgnoreCase("*"))
-                    {
-                        double total =  accounts.get(i).getDisplay_balance() * currencyConversionRates.get(j).getRate();
-                        currencyBalanceExchanged.add(i,total);
-                        System.out.println("Rate : " + currencyConversionRates.get(j).getRate());
-                        currencyRate.add(i,currencyConversionRates.get(j).getRate());
-                        break;
-                    }
 
+        for(int i = 0; i<accounts.size();i++) {
+
+            //Testing if the accounts currency code maps the currency conversion code
+            if (accounts.get(i).getAccountType().getAccountTypeCode().equalsIgnoreCase("CFCA")) {
+
+                if (accounts.get(i).getCurrency().getCurrencyCode().getConversionIndicator().equalsIgnoreCase("/")) {
+                    double total = accounts.get(i).getDisplay_balance() / accounts.get(i).getCurrency().getCurrencyCode().getRate();
+//                        currencyBalanceExchanged.add(i,total);
+//                        System.out.println("Rate : " + accounts.get(i).getCurrency().getCurrencyCode().getRate());
+//                        currencyRate.add(i,accounts.get(i).getCurrency().getCurrencyCode().getRate());
+                    accountsCurrency.add(accounts.get(i));
+                    System.out.println(" -  - - -  - - -  - - -  - - -  - - - - - - - - - -  - - - - - - - - ");
+                            System.out.println("Account No : " + accounts.get(i).getClientAccountNumber());
+                    System.out.println("Current Balance : R " + accounts.get(i).getDisplay_balance());
+                    System.out.println("Conversion Rate : " + accounts.get(i).getCurrency().getCurrencyCode().getRate());
+                    System.out.println("Convert : R " + total);
+                    System.out.println(" -  - - -  - - -  - - -  - - -  - - - - - - - - - -  - - - - - - - - ");
+
+                }
+                if (accounts.get(i).getCurrency().getCurrencyCode().getConversionIndicator().equalsIgnoreCase("*")) {
+                    double total = accounts.get(i).getDisplay_balance() * accounts.get(i).getCurrency().getCurrencyCode().getRate();
+
+                    accountsCurrency.add(accounts.get(i));
+                    //currencyBalanceExchanged.add(i,total);
+                    System.out.println(" -  - - -  - - -  - - -  - - -  - - - - - - - - - -  - - - - - - - - ");
+                    System.out.println("Account No : " + accounts.get(i).getClientAccountNumber());
+                    System.out.println("Current Balance : R " + accounts.get(i).getDisplay_balance());
+                    System.out.println("Conversion Rate : " + accounts.get(i).getCurrency().getCurrencyCode().getRate());
+                    System.out.println("Convert : R " + total);
+                    System.out.println(" -  - - -  - - -  - - -  - - -  - - - - - - - - - -  - - - - - - - - ");
                 }
             }
         }
-        map.put("currencyRate", currencyRate);
-        map.put("currencyBalanceExchanged",currencyBalanceExchanged);
-        map.put("accountsTransactional", accounts);
 
-        return map;
+        return accountsCurrency;
     }
+
+
+
+
+
+
+//    public List<ClientAccount> sortCurrencylAccs(List<ClientAccount> accounts, double randValue)
+//    {
+////        List<ClientAccount> sortAccounts = accounts.stream()
+////                .sorted(Comparator.comparing(ClientAccount::getDisplay_balance))
+////                .collect(Collectors.toList());
+//
+//        System.out.println("In side sort method");
+//        List<ClientAccount> sortAccounts = accounts.stream()
+//                .sorted(Comparator.comparing(ClientAccount::getDisplay_balance).reversed())
+//                .collect(Collectors.toList());
+//        return sortAccounts;
+//    }
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -14,6 +14,6 @@ import org.springframework.stereotype.Repository;
  * @author Admin
  */
 @Repository
-public interface CurrencyRepository extends JpaRepository<Currency, String> {
+public interface CurrencyRepository{ //extends JpaRepository<Currency, String> {
     
 }

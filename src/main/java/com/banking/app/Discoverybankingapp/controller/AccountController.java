@@ -2,14 +2,8 @@ package com.banking.app.Discoverybankingapp.controller;
 
 
 import com.banking.app.Discoverybankingapp.Services.AccountServices;
-import com.banking.app.Discoverybankingapp.model.AtmAllocation;
-import com.banking.app.Discoverybankingapp.model.Client;
-import com.banking.app.Discoverybankingapp.model.ClientAccount;
-import com.banking.app.Discoverybankingapp.model.CurrencyConversionRate;
-import com.banking.app.Discoverybankingapp.repository.AtmAllocationRepository;
-import com.banking.app.Discoverybankingapp.repository.ClientAccountRepository;
-import com.banking.app.Discoverybankingapp.repository.ClientRepository;
-import com.banking.app.Discoverybankingapp.repository.CurrencyConversionRateRepository;
+import com.banking.app.Discoverybankingapp.model.*;
+import com.banking.app.Discoverybankingapp.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,6 +35,8 @@ public class AccountController
     @Autowired
     private CurrencyConversionRateRepository currencyConversionRateRepository;
 
+
+
 //    @GetMapping("/getAccounts/{id}")
 //    public List<ClientAccount> getAccounts(@PathVariable("id") Long id)
 //    {
@@ -66,11 +62,13 @@ public class AccountController
         return accountServices.getAllAccountsForUserT(id);
     }
 
-//    @GetMapping("/getAllTransactional/{id}")
-//    public List<ClientAccount> getAllTransactionalAccs(@PathVariable("id") int id)
-//    {
-//        return accountServices.getAllTransactionalAccs(id);
-//    }
+    @GetMapping("/getAllTransactionalAccs/{id}")
+    public List<ClientAccount> getAllTransactionalAccs(@PathVariable("id") int id)
+    {
+        return accountServices.getAllTransactionalAccs(id);
+    }
+
+
 
 
     @GetMapping("/getATMs")
@@ -79,10 +77,10 @@ public class AccountController
         return atm.findAll();
     }
 
-    @GetMapping("/getCurrencyOfAccounts/{id}")
-    public HashMap getCurrencyValueWithAccounts(@PathVariable("id") int id)
+    @GetMapping("/getCurrencyValueWithAccounts/{id}")
+    public List<ClientAccount> getCurrencyValueWithAccounts(@PathVariable("id") int id)
     {
-        return accountServices.getCurrencyValueWithAccounts(id);
+        return accountServices.getForCurrenyAccounts(id);
     }
 
     @GetMapping("/getConver")
@@ -90,5 +88,13 @@ public class AccountController
     {
         return currencyConversionRateRepository.findAll();
     }
+
+//    @GetMapping("/getCurrency")
+//    public List<Currency> getC()
+//    {
+//        return currencyRepository.findAll();
+//    }
+
+
 
 }

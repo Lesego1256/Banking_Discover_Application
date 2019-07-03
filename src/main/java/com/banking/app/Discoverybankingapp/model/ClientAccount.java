@@ -35,8 +35,8 @@ public class ClientAccount implements Serializable {
     private AccountType accountType;
     //Currency PK | Currency_Conversion_rate (PK/FK)
     
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "CURRENCY_CODE")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "CURRENCY_CODE" , nullable = false, referencedColumnName = "CURRENCY_CODE")
     private Currency currency;
 
 
@@ -51,7 +51,21 @@ public class ClientAccount implements Serializable {
         return serialVersionUID;
     }
 
+    public String getClientAccountNumber() {
+        return clientAccountNumber;
+    }
 
+    public void setClientAccountNumber(String clientAccountNumber) {
+        this.clientAccountNumber = clientAccountNumber;
+    }
+
+    public double getDisplayBalance() {
+        return displayBalance;
+    }
+
+    public void setDisplayBalance(double displayBalance) {
+        this.displayBalance = displayBalance;
+    }
 
     public Client getClient() {
         return client;
