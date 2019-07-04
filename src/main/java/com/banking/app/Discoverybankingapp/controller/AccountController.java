@@ -3,6 +3,8 @@ package com.banking.app.Discoverybankingapp.controller;
 
 import com.banking.app.Discoverybankingapp.CustomException.ATMException;
 import com.banking.app.Discoverybankingapp.CustomException.CustomException;
+import com.banking.app.Discoverybankingapp.Services.CurrencyAccountServices;
+import com.banking.app.Discoverybankingapp.Services.TransactionalAccountServices;
 import com.banking.app.Discoverybankingapp.Services.AccountServices;
 import com.banking.app.Discoverybankingapp.model.ClientAccount;
 import com.banking.app.Discoverybankingapp.repository.AtmAllocationRepository;
@@ -25,11 +27,16 @@ public class AccountController {
 
 
     @Autowired
+    private CurrencyAccountServices currencyAccountServices;
+
+    @Autowired
     private ClientRepository repo;
 
     @Autowired
     private ClientAccountRepository cl;
 
+    @Autowired
+    private TransactionalAccountServices transactionalAccountServices;
 
     @Autowired
     private AtmAllocationRepository atm;
@@ -41,12 +48,12 @@ public class AccountController {
 
     @GetMapping("/getAccounts/{id}")
     public List<ClientAccount> getAccounts(@PathVariable("id") int id) {
-        return accountServices.getAllAccountsForUserT(id);
+        return transactionalAccountServices.getAllAccountsForUserT(id);
     }
 
     @GetMapping("/getAllTransactionalAccs/{id}")
     public List<ClientAccount> getAllTransactionalAccs(@PathVariable("id") int id) throws CustomException {
-        List<ClientAccount> allTransactionalAccs = accountServices.getAllTransactionalAccs(id);
+        List<ClientAccount> allTransactionalAccs = transactionalAccountServices.getAllAccountsForUserT(id);
         if (allTransactionalAccs.isEmpty() || allTransactionalAccs == null)
         {
             throw new CustomException();
@@ -57,11 +64,11 @@ public class AccountController {
 
     @GetMapping("/getCurrencyValueWithAccounts/{id}")
     public List<ClientAccount> getCurrencyValueWithAccounts(@PathVariable("id") int id) throws CustomException {
-        List<ClientAccount> currencyList = accountServices.getForCurrenyAccounts(id);
+        List<ClientAccount> currencyList = currencyAccountServices.getForCurrenyAccounts(id);
         if (currencyList.isEmpty()) {
             throw new CustomException();
         }
-        return accountServices.getForCurrenyAccounts(id);
+        return currencyAccountServices.getForCurrenyAccounts(id);
     }
 
 
