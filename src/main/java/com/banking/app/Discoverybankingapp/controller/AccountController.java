@@ -6,6 +6,7 @@ import com.banking.app.Discoverybankingapp.CustomException.CustomException;
 import com.banking.app.Discoverybankingapp.Services.CurrencyAccountServices;
 import com.banking.app.Discoverybankingapp.Services.TransactionalAccountServices;
 import com.banking.app.Discoverybankingapp.Services.AccountServices;
+import com.banking.app.Discoverybankingapp.Services.WithdrawalServices;
 import com.banking.app.Discoverybankingapp.model.ClientAccount;
 import com.banking.app.Discoverybankingapp.repository.AtmAllocationRepository;
 import com.banking.app.Discoverybankingapp.repository.ClientAccountRepository;
@@ -25,6 +26,8 @@ public class AccountController {
     @Autowired
     private AccountServices accountServices;
 
+    @Autowired
+    private WithdrawalServices withdrawalServices;
 
     @Autowired
     private CurrencyAccountServices currencyAccountServices;
@@ -78,7 +81,7 @@ public class AccountController {
         if (atm_id > 7) {
             throw new ATMException();
         }
-        return accountServices.makeWithDrawal(atm_id, client_id, account, amount);
+        return  withdrawalServices.makeWithDrawal(atm_id, client_id, account, amount);
     }
 
 
