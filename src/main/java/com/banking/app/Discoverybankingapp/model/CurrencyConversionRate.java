@@ -5,30 +5,31 @@
  */
 package com.banking.app.Discoverybankingapp.model;
 
-import java.io.Serializable;
-import javax.persistence.*;
-
 import lombok.Data;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import java.io.Serializable;
+
 /**
- *
  * @author Admin
  */
 @Entity
 @Data
-@Table(name="Currency_Conversion_Rate")
+@Table(name = "Currency_Conversion_Rate")
 public class CurrencyConversionRate implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @Column(name="CURRENCY_CODE")
+    @Column(name = "CURRENCY_CODE")
     private String currencyCode;
-    
 
 
-    @Column(name="CONVERSION_INDICATOR")
+    @Column(name = "CONVERSION_INDICATOR")
     private String conversionIndicator;
-    
+
     private double rate;
 
     public static long getSerialVersionUID() {

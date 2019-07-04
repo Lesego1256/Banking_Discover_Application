@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 @Entity
 @Data
-@Table(name="ATM_ALLOCATION")
+@Table(name = "ATM_ALLOCATION")
 public class AtmAllocation implements Serializable {
 
     private static final long serialVersionUID = 1L;

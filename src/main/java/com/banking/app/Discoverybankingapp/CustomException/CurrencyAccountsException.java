@@ -1,9 +1,8 @@
 package com.banking.app.Discoverybankingapp.CustomException;
 
-public class CurrencyAccountsException extends Exception{
+public class CurrencyAccountsException extends Exception {
 
-    public CurrencyAccountsException()
-    {
+    public CurrencyAccountsException() {
         super("No accounts to display");
     }
 }

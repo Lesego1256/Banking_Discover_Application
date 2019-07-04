@@ -5,18 +5,17 @@
  */
 package com.banking.app.Discoverybankingapp.model;
 
-import java.io.Serializable;
-import javax.persistence.*;
-
 import lombok.Data;
 
+import javax.persistence.*;
+import java.io.Serializable;
+
 /**
- *
  * @author Admin
  */
 @Entity
 @Data
-@Table(name="Credit_Card_Limit")
+@Table(name = "Credit_Card_Limit")
 public class CreditCardLimit implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -32,8 +31,6 @@ public class CreditCardLimit implements Serializable {
     public static long getSerialVersionUID() {
         return serialVersionUID;
     }
-
-
 
 
 }

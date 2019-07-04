@@ -10,12 +10,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 
-
 /**
- *
  * @author Admin
  */
 @Repository
-public interface ClientSubTypeRepository extends JpaRepository<ClientSubType, String>{
-    
+public interface ClientSubTypeRepository extends JpaRepository<ClientSubType, String> {
+
 }

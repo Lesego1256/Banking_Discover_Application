@@ -7,21 +7,19 @@ import java.io.Serializable;
 
 @Entity
 @Data
-@Table(name="Denomination")
+@Table(name = "Denomination")
 public class Denomination implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @Column(name="DENOMINATION_ID")
+    @Column(name = "DENOMINATION_ID")
     private Long denominationId;
-    @Column(name="VALUE")
+    @Column(name = "VALUE")
     private double value;
 
     @OneToOne
     @JoinColumn(name = "denomination_Type_Code")
     private DenominationType denominationTypeCode;
-
-
 
 
     public static long getSerialVersionUID() {

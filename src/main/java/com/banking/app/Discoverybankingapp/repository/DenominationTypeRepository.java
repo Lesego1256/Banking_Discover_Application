@@ -10,10 +10,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- *
  * @author Admin
  */
 @Repository
-public interface DenominationTypeRepository extends JpaRepository<DenominationType, String>{
-    
+public interface DenominationTypeRepository extends JpaRepository<DenominationType, String> {
+
 }

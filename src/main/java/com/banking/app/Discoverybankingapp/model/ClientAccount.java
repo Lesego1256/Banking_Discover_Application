@@ -5,24 +5,23 @@
  */
 package com.banking.app.Discoverybankingapp.model;
 
-import java.io.Serializable;
-import javax.persistence.*;
-
 import lombok.Data;
 
+import javax.persistence.*;
+import java.io.Serializable;
+
 /**
- *
  * @author Admin
  */
 @Entity
 @Data
-@Table(name="Client_Account")
+@Table(name = "Client_Account")
 public class ClientAccount implements Serializable {
     private static final long serialVersionUID = 1L;
-    
+
     //Credit_Card_LIMIT PK/FK
     @Id
-    @Column(name="CLIENT_ACCOUNT_NUMBER")
+    @Column(name = "CLIENT_ACCOUNT_NUMBER")
     private String clientAccountNumber;
     //Client FK (1 to many) 
     //Add the user information based on this class
@@ -34,16 +33,15 @@ public class ClientAccount implements Serializable {
     @JoinColumn(name = "account_type_code")
     private AccountType accountType;
     //Currency PK | Currency_Conversion_rate (PK/FK)
-    
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "CURRENCY_CODE" , nullable = false, referencedColumnName = "CURRENCY_CODE")
-    private Currency currency;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "CURRENCY_CODE", nullable = false, referencedColumnName = "CURRENCY_CODE")
+    private Currency currency;
 
 
     @Column(name = "DISPLAY_BALANCE")
     private double displayBalance;
-    @Column(name="RAND_VALUE")
+    @Column(name = "RAND_VALUE")
     private double randValue;
 
 
@@ -90,7 +88,6 @@ public class ClientAccount implements Serializable {
     public void setCurrency(Currency currency) {
         this.currency = currency;
     }
-
 
 
     public double getRandValue() {

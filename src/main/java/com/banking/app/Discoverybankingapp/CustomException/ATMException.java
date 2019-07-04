@@ -1,9 +1,8 @@
 package com.banking.app.Discoverybankingapp.CustomException;
 
-public class ATMException extends Exception{
+public class ATMException extends Exception {
 
-    public ATMException()
-    {
+    public ATMException() {
         super("No accounts to display");
     }
 

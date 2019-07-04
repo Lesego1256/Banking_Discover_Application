@@ -3,7 +3,6 @@ package com.banking.app.Discoverybankingapp.repository;
 
 import com.banking.app.Discoverybankingapp.model.ClientAccount;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,17 +14,15 @@ import java.util.List;
  */
 
 
-
 /**
- *
  * @author Admin
  */
 @Repository
-public interface ClientAccountRepository extends JpaRepository<ClientAccount, String>{
+public interface ClientAccountRepository extends JpaRepository<ClientAccount, String> {
 
     List<ClientAccount> findAllByClient_ClientId(int id);
-    ClientAccount findByClientAccountNumberAndClient_ClientId(String account, int id);
 
+    ClientAccount findByClientAccountNumberAndClient_ClientId(String account, int id);
 
 
 //    @Query("Select ca.displayBalance, cr.rate, cu.currencyCode,ac.description,cr.conversionIndicator \n" +
@@ -35,7 +32,6 @@ public interface ClientAccountRepository extends JpaRepository<ClientAccount, St
 //            "and ac.transactional = true\n" +
 //            "and ca.client_id = 1")
 //    List<Object[]> getAccountsConverted(int id);
-
 
 
 }

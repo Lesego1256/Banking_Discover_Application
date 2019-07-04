@@ -4,13 +4,12 @@ import lombok.Data;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
 
 @Entity
 @Data
-@Table(name="ATM")
+@Table(name = "ATM")
 public class Atm implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -19,8 +18,6 @@ public class Atm implements Serializable {
 
     private String name;//10
     private String location; //255
-
-
 
 
     public static long getSerialVersionUID() {

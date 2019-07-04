@@ -5,32 +5,29 @@
  */
 package com.banking.app.Discoverybankingapp.model;
 
-import java.io.Serializable;
-import javax.persistence.*;
-
 import lombok.Data;
 
+import javax.persistence.*;
+import java.io.Serializable;
+
 /**
- *
  * @author Admin
  */
 @Entity
 @Data
-@Table(name="Currency")
+@Table(name = "Currency")
 public class Currency implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name ="CURRENCY_CODE", nullable = false,referencedColumnName = "CURRENCY_CODE")
+    @JoinColumn(name = "CURRENCY_CODE", nullable = false, referencedColumnName = "CURRENCY_CODE")
     private CurrencyConversionRate currencyCode;
 
-    @Column(name="DECIMAL_PLACES")
+    @Column(name = "DECIMAL_PLACES")
     private Double decimalPlaces;
-    @Column(name="DESCRIPTION")
+    @Column(name = "DESCRIPTION")
     private String description;
-
-
 
 
     public static long getSerialVersionUID() {
@@ -53,7 +50,6 @@ public class Currency implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
-
 
 
     public Double getDecimalPlaces() {

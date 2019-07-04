@@ -2,19 +2,13 @@ package com.banking.app.Discoverybankingapp.repository;
 
 import com.banking.app.Discoverybankingapp.model.Client;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.ManyToOne;
-import java.util.List;
-
 @Repository
-public interface ClientRepository  extends JpaRepository<Client, Long> {
+public interface ClientRepository extends JpaRepository<Client, Long> {
 
 //    @Query("select clientId from Client")
 //    List<Long> getAllClients();
-
-
 
 
 //    @Query("Select distinct c from Client c where c.clientId=?1")

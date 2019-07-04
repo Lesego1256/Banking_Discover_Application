@@ -6,22 +6,18 @@ import com.banking.app.Discoverybankingapp.repository.CurrencyConversionRateRepo
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.Max;
 import java.util.List;
 
 @Service
-public class CurrencyConversionRateServices
-{
+public class CurrencyConversionRateServices {
 
 
     @Autowired
     private CurrencyConversionRateRepository currencyConversionRateRepository;
 
-    public List<CurrencyConversionRate> getListCurrencyRateList()
-    {
+    public List<CurrencyConversionRate> getListCurrencyRateList() {
         return currencyConversionRateRepository.findAll();
     }
-
 
 
 }

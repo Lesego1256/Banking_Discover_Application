@@ -11,12 +11,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- *
  * @author Admin
  */
 @Repository
-public interface CurrencyConversionRateRepository extends JpaRepository<CurrencyConversionRate, String>{
-
+public interface CurrencyConversionRateRepository extends JpaRepository<CurrencyConversionRate, String> {
 
 
 }

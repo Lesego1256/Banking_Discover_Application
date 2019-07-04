@@ -5,27 +5,28 @@
  */
 package com.banking.app.Discoverybankingapp.model;
 
-import java.io.Serializable;
-import javax.persistence.*;
-
 import lombok.Data;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import java.io.Serializable;
 
 
 /**
- *
  * @author Admin
  */
 @Entity
 @Data
-@Table(name="CLIENT_TYPE")
-public class ClientType implements Serializable{
+@Table(name = "CLIENT_TYPE")
+public class ClientType implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @Column(name="CLIENT_TYPE_CODE")
+    @Column(name = "CLIENT_TYPE_CODE")
     private String clientTypeCode;
-    @Column(name="DESCRIPTION")
+    @Column(name = "DESCRIPTION")
     private String description;
 
     public static long getSerialVersionUID() {

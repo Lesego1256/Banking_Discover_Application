@@ -11,10 +11,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- *
  * @author Admin
  */
 @Repository
-public interface CreditCardLimitRepository extends JpaRepository<CreditCardLimit, String>{
-    
+public interface CreditCardLimitRepository extends JpaRepository<CreditCardLimit, String> {
+
 }

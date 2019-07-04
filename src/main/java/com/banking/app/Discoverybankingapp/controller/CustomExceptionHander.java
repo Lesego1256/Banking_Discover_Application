@@ -9,17 +9,15 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
-public class CustomExceptionHander  {
+public class CustomExceptionHander {
 
     @ExceptionHandler({CustomException.class})
-    public ResponseEntity<Object> myMessage(CustomException c)
-    {
+    public ResponseEntity<Object> myMessage(CustomException c) {
         return new ResponseEntity<>("No accounts to display", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler({ATMException.class})
-    public ResponseEntity<Object> myMessage(ATMException c)
-    {
+    public ResponseEntity<Object> myMessage(ATMException c) {
         return new ResponseEntity<>("ATM not registered or unfunded", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
