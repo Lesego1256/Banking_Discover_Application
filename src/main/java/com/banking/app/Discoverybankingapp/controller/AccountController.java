@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -76,8 +77,8 @@ public class AccountController {
 
 
     @GetMapping("/makeAWithdrawalll/{atm_id}/{client_id}/{account}/{amount}")
-    public ClientAccount makeWithdrawa1l(@PathVariable("atm_id") int atm_id, @PathVariable("client_id") int client_id,
-                                         @PathVariable("account") String account, @PathVariable("amount") double amount) throws ATMException {
+    public HashMap makeWithdrawa1l(@PathVariable("atm_id") int atm_id, @PathVariable("client_id") int client_id,
+                                   @PathVariable("account") String account, @PathVariable("amount") double amount) throws ATMException {
         if (atm_id > 7) {
             throw new ATMException();
         }

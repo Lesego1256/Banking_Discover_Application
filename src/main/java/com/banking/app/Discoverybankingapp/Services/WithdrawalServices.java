@@ -40,11 +40,11 @@ public class WithdrawalServices {
     @Autowired
     private WithdrawalServices withdrawalServices;
 
-    public ClientAccount makeWithDrawal(int atm_id, int client_id, String account, double amount) throws ATMException {
+    public HashMap makeWithDrawal(int atm_id, int client_id, String account, double amount) throws ATMException {
         ClientAccount clientAccountCl = client.findByClientAccountNumberAndClient_ClientId(account, client_id);
         Atm atm = atmRepo.findById(atm_id).get();
-
-
+        HashMap dispenser = checkingNotes(amount,atm_id);
+        Boolean status =  (boolean) dispenser.get("status");
         if (clientAccountCl == null) {
             System.out.println("Client account not found!!");
             //throw new ATMException();
@@ -57,9 +57,9 @@ public class WithdrawalServices {
                     //Check if you can make withdraw
 
                     if (clientAccountCl.getDisplayBalance() >= amount)
-                        if (checkingNotes(amount, atm_id)) {
+                        if (status) {
                             double balance = clientAccountCl.getDisplayBalance() - amount;
-                            System.out.println("New Balance " + balance);
+                            //System.out.println("New Balance " + balance);
                             clientAccountCl.setDisplayBalance(balance);
                             clientAccountCl.setRandValue(balance);
                             System.out.println("Update the details");
@@ -70,18 +70,28 @@ public class WithdrawalServices {
                     System.out.println(clientAccountCl.getDisplayBalance() - amount);
                     if (MAX_WITH_DRAW <= clientAccountCl.getDisplayBalance() - amount)
                         if (clientAccountCl.getAccountType().getAccountTypeCode().equalsIgnoreCase("CHQ"))
-                            if (checkingNotes(postiveNumber, atm_id)) {
+                            if (status) {
                                 //double balance = clientAccountCl.getDisplayBalance() - amount;
                                 clientAccountCl.setDisplayBalance(balance);
                                 clientAccountCl.setRandValue(balance);
+
                             }
                 } else {
                     throw new ATMException();
                 }
-        return clientAccountCl;
+        String message = "Transaction couldn't be procressed";
+
+
+                if (status ==true)
+                {
+                    message = "Transaction got be procressed";
+                }
+
+                dispenser.put("message",message);
+        return dispenser;
     }
 
-    public boolean checkingNotes(double amount, int atm_id) {
+    public HashMap checkingNotes(double amount, int atm_id) {
 
         int countValue10=0;int countValue20=0;int countValue50=0;int countValue100=0;int countValue200=0;
         boolean status = false;
@@ -101,18 +111,18 @@ public class WithdrawalServices {
 
         for (int i = 0; i < atmList.size(); i++) {
 
-            
+
             if (amount >= atmList.get(i).getDenomination().getValue()) {
                 if (amount % atmList.get(i).getDenomination().getValue() == 0)
                     if (atmList.get(i).getCount() > 1)
                 {
 
 
-                    //System.out.println("Value : " + atmList.get(i).getDenomination().getValue() + " Count is " + atmList.get(i).getCount());
+
 
                     int newCounter = (int) (amount / atmList.get(i).getDenomination().getValue());
 
-                    //System.out.println("Counter " + newCounter);
+
                     int num = (int) (atmList.get(i).getCount() - (amount / atmList.get(i).getDenomination().getValue()));
                     // System.out.println(amount / atmList.get(i).getDenomination().getValue());
                     int newCount = atmList.get(i).getCount() - newCounter;
@@ -120,70 +130,69 @@ public class WithdrawalServices {
 
                     if(atmList.get(i).getDenomination().getValue() ==10)
                     {
-
                        dispenser.put("countValue10" , newCounter);
+                       amount = 0;
+                        break;
                         //int temp = (int) dispenser.get("countValue10");
 
                     }
                     if(atmList.get(i).getDenomination().getValue() ==20)
                     {
+                        amount = 0;
                         dispenser.put("countValue20" , newCounter);
-                    }
+                        break;
+                }
                     if(atmList.get(i).getDenomination().getValue() ==50)
                     {
+                        amount = 0;
                         dispenser.put("countValue50" , newCounter);
+                        break;
                     }if(atmList.get(i).getDenomination().getValue() ==100)
                 {
                     dispenser.put("countValue100" , newCounter);
                 }if(atmList.get(i).getDenomination().getValue() ==200)
                 {
+                    amount = 0;
                     dispenser.put("countValue200" , newCounter);
+                    break;
 
                 }
-
-
-
-
                     status = true;
                     atmAllocationRepository.save(atmList.get(i));
                     atmList.get(i).setCount(newCount);
-
+                    break;
                 }
 
 
-                        if(amount >= atmList.get(i).getDenomination().getValue() || amount-atmList.get(i).getDenomination().getValue()>=0)
+                if(amount >= atmList.get(i).getDenomination().getValue() ) {
+                    //checking the count
+                    if(amount % atmList.get(i).getDenomination().getValue() == 0 || (atmList.get(i).getCount() >= 1 ))
 
-                    {
-
-                         if(atmList.get(i).getDenomination().getValue() == 10)
-                        {
+                        if (atmList.get(i).getDenomination().getValue() == 10) {
                             amount = amount - 10;
                             int temp = (int) dispenser.get("countValue10") + 1;
-                            dispenser.put("countValue10" , temp);
-                        }
-                        else if(atmList.get(i).getDenomination().getValue() == 20)
-                        {
+                            dispenser.put("countValue10", temp);
+                            break;
+                        } else if (atmList.get(i).getDenomination().getValue() == 20){
                             amount = amount - 20;
                             int temp = (int) dispenser.get("countValue20") + 1;
-                            dispenser.put("countValue20" , temp);
-                        }
-                        else if(atmList.get(i).getDenomination().getValue() == 50)
-                        {
+                            dispenser.put("countValue20", temp);
+
+                        } else if (atmList.get(i).getDenomination().getValue() == 50)  {
                             int temp = (int) dispenser.get("countValue50") + 1;
                             amount = amount - 50;
-                            dispenser.put("countValue50" , temp);
-                        }
-                        else if(atmList.get(i).getDenomination().getValue() == 100)
-                        {
+                            dispenser.put("countValue50", temp);
+
+                        } else if ((atmList.get(i).getDenomination().getValue() == 100) ){
                             amount = amount - 100;
                             int temp = (int) dispenser.get("countValue100") + 1;
-                            dispenser.put("countValue100" , temp);
-                        }
-                        else if(atmList.get(i).getDenomination().getValue() == 200)
-                        {
+                            dispenser.put("countValue100", temp);
+
+                        } else if ((atmList.get(i).getDenomination().getValue() == 200) ){
                             amount = amount - 200;
                             int temp = (int) dispenser.get("countValue200") + 1;
-                            dispenser.put("countValue200" , temp);
+                            dispenser.put("countValue200", temp);
+
                         }
                         //amount = (amount - atmList.get(i).getDenomination().getValue());
                         System.out.println("Amount : " + amount);
@@ -194,15 +203,21 @@ public class WithdrawalServices {
                         status = true;
 
                     }
+                    else{
+                        status = false;
+                    }
 
 
             }
         }
-        if (amount == 0) {
+        if (amount < 0) {
             status = true;
         }
+
+
+        dispenser.put("status",status);
         System.out.println(dispenser);
-        return status;
+        return dispenser;
     }
 
 }
