@@ -91,13 +91,7 @@ public class ClientAccount implements Serializable {
         this.currency = currency;
     }
 
-    public double getDisplay_balance() {
-        return displayBalance;
-    }
 
-    public void setDisplay_balance(double display_balance) {
-        this.displayBalance = displayBalance;
-    }
 
     public double getRandValue() {
         return randValue;

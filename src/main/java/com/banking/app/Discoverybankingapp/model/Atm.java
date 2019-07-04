@@ -15,7 +15,7 @@ public class Atm implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    private Long atm_Id;
+    private Integer atm_Id;
 
     private String name;//10
     private String location; //255
@@ -27,11 +27,11 @@ public class Atm implements Serializable {
         return serialVersionUID;
     }
 
-    public Long getAtm_Id() {
+    public Integer getAtm_Id() {
         return atm_Id;
     }
 
-    public void setAtm_Id(Long atm_Id) {
+    public void setAtm_Id(Integer atm_Id) {
         this.atm_Id = atm_Id;
     }
 

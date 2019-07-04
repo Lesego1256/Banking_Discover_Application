@@ -5,10 +5,7 @@ import com.banking.app.Discoverybankingapp.Services.AccountServices;
 import com.banking.app.Discoverybankingapp.model.*;
 import com.banking.app.Discoverybankingapp.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -36,14 +33,6 @@ public class AccountController
     private CurrencyConversionRateRepository currencyConversionRateRepository;
 
 
-
-//    @GetMapping("/getAccounts/{id}")
-//    public List<ClientAccount> getAccounts(@PathVariable("id") Long id)
-//    {
-//        return accountServices.getAccounts(id);
-//    }
-
-
     @GetMapping("/getAll")
     List<Client> getAll()
     {
@@ -68,9 +57,6 @@ public class AccountController
         return accountServices.getAllTransactionalAccs(id);
     }
 
-
-
-
     @GetMapping("/getATMs")
     public List<AtmAllocation> getATMs()//(@PathVariable("id") int id)
     {
@@ -89,12 +75,22 @@ public class AccountController
         return currencyConversionRateRepository.findAll();
     }
 
-//    @GetMapping("/getCurrency")
-//    public List<Currency> getC()
-//    {
-//        return currencyRepository.findAll();
-//    }
 
 
+
+    @GetMapping("/makeAWithdrawalll/{atm_id}/{client_id}/{account}/{amount}")
+    public ClientAccount makeWithdrawa1l(@PathVariable("atm_id") int atm_id,@PathVariable("client_id") int client_id,
+                                        @PathVariable("account") String account, @PathVariable("amount") double amount)
+    {
+        System.out.println("In method");
+        return accountServices.makeWithDrawal(atm_id,client_id,account,amount);
+    }
+
+
+    @GetMapping("/getStatusesssss/{amount}/{atm_id}")
+    public boolean  getStatussss(@PathVariable("amount") double amount, @PathVariable("atm_id") int atm_id)
+    {
+        return accountServices.checkingNotes(amount,atm_id);
+    }
 
 }

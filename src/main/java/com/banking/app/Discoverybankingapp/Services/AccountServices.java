@@ -42,37 +42,35 @@ public class AccountServices {
     public List<ClientAccount> getAllAccountsForUserT(int id) {
         List<ClientAccount> transactionAccounts = new ArrayList<>();
         List<ClientAccount> accounts = client.findAllByClient_ClientId(id);
+        if(accounts  == null)
+        {
+            System.out.println("No accounts to display");
+        }
+        else if ( accounts !=null)
+        {
+            for (int i = 0; i < accounts.size(); i++) {
+                System.out.println("In Loop");
+                if (accounts.get(i).getAccountType().getTransactional() == true) {
+                    System.out.println("TRUE");
+                    transactionAccounts.add(accounts.get(i));
 
-        for (int i = 0; i < accounts.size(); i++) {
-            System.out.println("In Loop");
-            if (accounts.get(i).getAccountType().getTransactional() == true) {
-                System.out.println("TRUE");
-                transactionAccounts.add(accounts.get(i));
+                }
+
 
             }
-
-
         }
+
 
         transactionAccounts = sortTransactionalAccs(transactionAccounts);
 
         return transactionAccounts;
 
     }
-    //To sort the accounts in ascending
-    //Used
-
-
-
     public List<ClientAccount> sortTransactionalAccs(List<ClientAccount> accounts)
     {
-//        List<ClientAccount> sortAccounts = accounts.stream()
-//                .sorted(Comparator.comparing(ClientAccount::getDisplay_balance))
-//                .collect(Collectors.toList());
-
         System.out.println("In side sort method");
         List<ClientAccount> sortAccounts = accounts.stream()
-                .sorted(Comparator.comparing(ClientAccount::getDisplay_balance).reversed())
+                .sorted(Comparator.comparing(ClientAccount::getDisplayBalance).reversed())
                 .collect(Collectors.toList());
         return sortAccounts;
     }
@@ -116,14 +114,11 @@ public class AccountServices {
 
 
 
-    ///////////////////////
+    /////////////////////// Get All Currency for a User
     public List<ClientAccount> getForCurrenyAccounts(int id){
-        List<Double> currencyBalanceExchanged =new ArrayList<>();
-
         List<ClientAccount> accountsCurrency = new ArrayList<>();
 
         List<ClientAccount> accounts = getAllTransactionalAccs(id);
-
 
 
         for(int i = 0; i<accounts.size();i++) {
@@ -132,23 +127,21 @@ public class AccountServices {
             if (accounts.get(i).getAccountType().getAccountTypeCode().equalsIgnoreCase("CFCA")) {
 
                 if (accounts.get(i).getCurrency().getCurrencyCode().getConversionIndicator().equalsIgnoreCase("/")) {
-                    double total = accounts.get(i).getDisplay_balance() / accounts.get(i).getCurrency().getCurrencyCode().getRate();
-//                        currencyBalanceExchanged.add(i,total);
-//                        System.out.println("Rate : " + accounts.get(i).getCurrency().getCurrencyCode().getRate());
-//                        currencyRate.add(i,accounts.get(i).getCurrency().getCurrencyCode().getRate());
+                    double total = accounts.get(i).getDisplayBalance() / accounts.get(i).getCurrency().getCurrencyCode().getRate();
+
                     accounts.get(i).setRandValue(total);
                     accountsCurrency.add(accounts.get(i));
 
                     System.out.println(" -  - - -  - - -  - - -  - - -  - - - - - - - - - -  - - - - - - - - ");
                             System.out.println("Account No : " + accounts.get(i).getClientAccountNumber());
-                    System.out.println("Current Balance : R " + accounts.get(i).getDisplay_balance());
+                    System.out.println("Current Balance : R " + accounts.get(i).getDisplayBalance());
                     System.out.println("Conversion Rate : " + accounts.get(i).getCurrency().getCurrencyCode().getRate());
                     System.out.println("Convert : R " + total);
                     System.out.println(" -  - - -  - - -  - - -  - - -  - - - - - - - - - -  - - - - - - - - ");
 
                 }
                 if (accounts.get(i).getCurrency().getCurrencyCode().getConversionIndicator().equalsIgnoreCase("*")) {
-                    double total = accounts.get(i).getDisplay_balance() * accounts.get(i).getCurrency().getCurrencyCode().getRate();
+                    double total = accounts.get(i).getDisplayBalance() * accounts.get(i).getCurrency().getCurrencyCode().getRate();
 
                     accounts.get(i).setRandValue(total);
                     accountsCurrency.add(accounts.get(i));
@@ -157,13 +150,18 @@ public class AccountServices {
                     //currencyBalanceExchanged.add(i,total);
                     System.out.println(" -  - - -  - - -  - - -  - - -  - - - - - - - - - -  - - - - - - - - ");
                     System.out.println("Account No : " + accounts.get(i).getClientAccountNumber());
-                    System.out.println("Current Balance : R " + accounts.get(i).getDisplay_balance());
+                    System.out.println("Current Balance : R " + accounts.get(i).getDisplayBalance());
                     System.out.println("Conversion Rate : " + accounts.get(i).getCurrency().getCurrencyCode().getRate());
                     System.out.println("Convert : R " + total);
                     System.out.println(" -  - - -  - - -  - - -  - - -  - - - - - - - - - -  - - - - - - - - ");
 
                 }
             }
+        }
+
+        if(accountsCurrency == null)
+        {
+            System.out.println("No accounts to display");
         }
         //To sort based on the calculated rand value!
         accountsCurrency = sortCurrencylAccs(accountsCurrency);
@@ -174,8 +172,6 @@ public class AccountServices {
 
     public List<ClientAccount> sortCurrencylAccs(List<ClientAccount> accounts)
     {
-
-        System.out.println("In side sort method");
         List<ClientAccount> sortAccounts = accounts.stream()
                 .sorted(Comparator.comparing(ClientAccount::getRandValue).reversed())
                 .collect(Collectors.toList());
@@ -200,59 +196,77 @@ public class AccountServices {
 
 
 
-
+    //
     public ClientAccount makeWithDrawal(int atm_id, int client_id, String account,double amount) {
         ClientAccount clientAccountCl = client.findByClientAccountNumberAndClient_ClientId(account, client_id);
-
         Atm atm = atmRepo.findById(atm_id).get();
+        if(clientAccountCl == null)
+            {
+                System.out.println("Client account not found!!");
 
-        //
-        if (clientAccountCl.getAccountType().getTransactional() == true)
+            }
+        else if (atm == null)
+        {
+            System.out.println("ATM not found!!");
+        }
+        else if (clientAccountCl.getAccountType().getTransactional() == true)
             if (clientAccountCl != null)
                 if (atm != null) {
                     //Check if you can make withdraw
-                    if (clientAccountCl.getDisplay_balance() >= amount) {
-                        double balance = clientAccountCl.getDisplay_balance() - amount;
-                        clientAccountCl.setDisplay_balance(balance);
-                        client.save(clientAccountCl);
-                    }//check if account is cheque and balance is less than -10000
-                    else if (clientAccountCl.getDisplay_balance() < amount)
-                        if (clientAccountCl.getAccountType().getAccountTypeCode().equalsIgnoreCase("CHQ"))
-                            if (clientAccountCl.getDisplay_balance() <= -10000)
-                                if (amount - clientAccountCl.getDisplay_balance() == -10000) {
-                                    double balance = clientAccountCl.getDisplay_balance() - amount;
-                                    clientAccountCl.setDisplay_balance(balance);
-                                    client.save(clientAccountCl);
 
-                                }
+                    if (clientAccountCl.getDisplayBalance() >= amount)
+                        if (checkingNotes(amount, atm_id)) {
+//                        boolean status200 = getStatusOfAtmNotes200(amount,atm_id);
+//                        System.out.println("200 Status : " + status200);
+                            double balance = clientAccountCl.getDisplayBalance() - amount;
+                            System.out.println("New Balance " + balance);
+                            clientAccountCl.setDisplayBalance(balance);
+                            clientAccountCl.setRandValue(balance);
+                            System.out.println("Update the details");
+                            client.save(clientAccountCl);
+                        }//check if account is cheque and balance is less than -10000
+                        else if (clientAccountCl.getDisplayBalance() < amount)
+                            if (clientAccountCl.getAccountType().getAccountTypeCode().equalsIgnoreCase("CHQ"))
+                            {
+                                if (clientAccountCl.getDisplayBalance() <= -10000)
+                                    if (amount - clientAccountCl.getDisplayBalance() == -10000) {
+                                        double balance = clientAccountCl.getDisplayBalance() - amount;
+                                        clientAccountCl.setDisplayBalance(balance);
+                                        client.save(clientAccountCl);
+
+                                    }
+                                    else{
+                                        System.out.println("You have exceeded the limit");
+                                    }
+                            }
+                            else
+                            {
+                                System.out.println("Amount is not a cheque account");
+                            }
 
 
-                }
 
+
+                    }
         return clientAccountCl;
     }
 
-    public boolean isAmountIsCoin(int atm_id, double amount) {
-            boolean result = false;
 
-        if (amount % 10 == 0) {
-            result =   false;
-        }
 
-        if (amount <= 10) {
-            result = true;
-        } else if ((amount % 10 >= 1 )||(amount % 10 >= 2 )||(amount % 10 >= 3 )||(amount % 10 >= 4 )||(amount % 10 >= 5)||(
-        amount % 10 >= 6 )||(amount % 10 >= 7 )||(amount % 10 >= 8 )||(amount % 10 >= 9 )) {
-            result = true;
-        }
-        return result;
-    }
 
-    public boolean doesHaveEnoughNotes(double amount, int id, int atm_id)
+
+
+
+
+
+
+    public List<AtmAllocation>  getListLocations(double amount, int atm_id)
     {
         List<AtmAllocation> locations = atmAllocationRepository.findAll();
 
         List<AtmAllocation> locationsAtm = new ArrayList<>();
+
+
 
         for(int i = 0; i<locations.size();i++)
         {
@@ -260,37 +274,158 @@ public class AccountServices {
             if(locations.get(i).getAtm().getAtm_Id() == atm_id)
             {
                 locationsAtm.add(locations.get(i));
-                //locationsAtm.get(i).getDenomination().
             }
         }
+        locationsAtm = sortLocationToHighest(locationsAtm);
 
-        return false;
+        return locationsAtm;
     }
 
 
-    public boolean getStatusOfAtmNotes200(List<AtmAllocation> atmAllocations, double amount)
-    {
-        boolean status = false;
-        for(int i = 0; i<atmAllocations.size();i++)
-        {
-            if(atmAllocations.get(i).getDenomination().getValue() == 200)
-            {
-                double cashAtm200 = 200 * atmAllocations.get(i).getCount();
 
-                if(cashAtm200 % amount == 0)
+    public List<AtmAllocation> sortLocationToHighest(List<AtmAllocation> atmList)
+    {
+        System.out.println("In side sort method");
+        List<AtmAllocation> sortAccounts = atmList.stream()
+                .sorted(Comparator.comparing(AtmAllocation::getAtmAllocationId).reversed())
+                .collect(Collectors.toList());
+        return sortAccounts;
+    }
+
+
+
+    //check the note in the atm
+    public boolean checkingNotes(double amount, int atm_id)
+    {
+        List<AtmAllocation>  atmList =  getListLocations(amount, atm_id);
+        boolean status = false;
+
+        int count = 0;
+
+        //for(int i = atmList.size(); i-- > 0; )
+        for(int i = 0;i<atmList.size();i++)
+        {
+            //System.out.println("Value for the if " + atmList.get(i).getDenomination().getValue());
+            if(amount >= atmList.get(i).getDenomination().getValue())
+            {
+
+
+                if(amount % atmList.get(i).getDenomination().getValue()== 0)
+                if(amount / atmList.get(i).getDenomination().getValue() <= atmList.get(i).getCount())
                 {
+                   // int num = (int) ((int) (atmList.get(i).getDenomination().getValue() *  atmList.get(i).getCount()) - amount);
+
+
+                    System.out.println("Value : " + atmList.get(i).getDenomination().getValue() + " Count is " + atmList.get(i).getCount());
+
+                    int  newCounter = (int) (amount /atmList.get(i).getDenomination().getValue());
+                    System.out.println("Count " + newCounter);
+                   int  num = (int) (atmList.get(i).getCount() - (amount/atmList.get(i).getDenomination().getValue()));
+                   System.out.println(amount/atmList.get(i).getDenomination().getValue());
+
+                    int newCount  =  atmList.get(i).getCount() - newCounter;
+
+
                     status = true;
+                    //calculate the count that is left
+                    //int co  = (int) (amount / atmList.get(i).getDenomination().getValue());
+                    System.out.println(" ATM Count : " + atmList.get(i).getDenomination().getValue());
+                    //int calculatedCount = amount / atmList.get(i).getDenomination().getValue();
+                    //count  = atmList.get(i).getCount() - Math.floor(calculatedCount);
+                    atmList.get(i).setCount(newCount);
+                    System.out.println("New count : " + newCount + " of : " + atmList.get(i).getDenomination().getValue());
+
                     break;
                 }
+                else {
+                    amount = amount - atmList.get(i).getDenomination().getValue();
+                    count = atmList.get(i).getCount()-1;
+                    atmList.get(i).setCount(count);
+                    status = true;
+
+                }
+
+
             }
 
 
         }
 
 
+
+
+        if(amount == 0)
+        {
+            status = true;
+        }
+        else if(amount >0)
+        {
+            System.out.println("Atm does not have enough notes");
+        }
+        saveATmLocationCount(status,amount,atm_id);
         return status;
     }
 
+
+
+
+
+    // to save the state of the atm example the count s
+    public void saveATmLocationCount(boolean status, double amount,int atm_id)
+    {
+        if(status)
+        {
+            List<AtmAllocation>  atmList =  getListLocations(amount, atm_id);
+
+
+            int count = 0;
+
+            //for(int i = atmList.size(); i-- > 0; )
+            for(int i = 0;i<atmList.size();i++)
+            {
+                //System.out.println("Value for the if " + atmList.get(i).getDenomination().getValue());
+                if(amount >= atmList.get(i).getDenomination().getValue())
+                {
+
+
+                    if(amount % atmList.get(i).getDenomination().getValue()== 0)
+                        if(amount / atmList.get(i).getDenomination().getValue() <= atmList.get(i).getCount())
+                        {
+                            int  newCounter = (int) (amount /atmList.get(i).getDenomination().getValue());
+
+                            int  num = (int) (atmList.get(i).getCount() - (amount/atmList.get(i).getDenomination().getValue()));
+
+
+                            int newCount  =  atmList.get(i).getCount() - newCounter;
+
+
+                            status = true;
+
+
+
+
+
+                            atmList.get(i).setCount(newCount);
+
+                            atmAllocationRepository.save(atmList.get(i));
+                            break;
+                        }
+                        else {
+                            amount = amount - atmList.get(i).getDenomination().getValue();
+                            count = atmList.get(i).getCount()-1;
+                            atmList.get(i).setCount(count);
+
+                            status = true;
+                            atmAllocationRepository.save(atmList.get(i));
+                        }
+
+
+                }
+
+
+            }
+        }
+    }
 }
 
 
