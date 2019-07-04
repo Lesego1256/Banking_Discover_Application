@@ -1,6 +1,7 @@
 package com.banking.app.Discoverybankingapp.Services;
 
 import com.banking.app.Discoverybankingapp.CustomException.ATMException;
+import com.banking.app.Discoverybankingapp.CustomException.CustomException;
 import com.banking.app.Discoverybankingapp.model.Atm;
 import com.banking.app.Discoverybankingapp.model.AtmAllocation;
 import com.banking.app.Discoverybankingapp.model.ClientAccount;
@@ -128,9 +129,10 @@ public class AccountServices {
 
         if (clientAccountCl == null) {
             System.out.println("Client account not found!!");
-            throw new ATMException();
+            //throw new ATMException();
         } else if (atm == null) {
             System.out.println("ATM not found!!");
+            throw new ATMException();
         } else if (clientAccountCl.getAccountType().getTransactional() == true)
             if (clientAccountCl != null)
                 if (atm != null) {

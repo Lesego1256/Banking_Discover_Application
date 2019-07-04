@@ -47,7 +47,8 @@ public class AccountController {
     @GetMapping("/getAllTransactionalAccs/{id}")
     public List<ClientAccount> getAllTransactionalAccs(@PathVariable("id") int id) throws CustomException {
         List<ClientAccount> allTransactionalAccs = accountServices.getAllTransactionalAccs(id);
-        if (allTransactionalAccs.isEmpty()) {
+        if (allTransactionalAccs.isEmpty() || allTransactionalAccs == null)
+        {
             throw new CustomException();
         }
         return allTransactionalAccs;
@@ -67,7 +68,7 @@ public class AccountController {
     @GetMapping("/makeAWithdrawalll/{atm_id}/{client_id}/{account}/{amount}")
     public ClientAccount makeWithdrawa1l(@PathVariable("atm_id") int atm_id, @PathVariable("client_id") int client_id,
                                          @PathVariable("account") String account, @PathVariable("amount") double amount) throws ATMException {
-        if (atm_id != 1 || atm_id != 2 || atm_id != 3) {
+        if (atm_id > 7) {
             throw new ATMException();
         }
         return accountServices.makeWithDrawal(atm_id, client_id, account, amount);
