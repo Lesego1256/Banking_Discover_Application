@@ -1,5 +1,7 @@
 package com.banking.app.Discoverybankingapp.Services;
 
+import com.banking.app.Discoverybankingapp.CustomException.ATMException;
+import com.banking.app.Discoverybankingapp.CustomException.CustomException;
 import com.banking.app.Discoverybankingapp.model.*;
 import com.banking.app.Discoverybankingapp.repository.AtmAllocationRepository;
 import com.banking.app.Discoverybankingapp.repository.AtmRepository;
@@ -19,6 +21,9 @@ import java.util.stream.Collectors;
 @Service
 public class AccountServices {
 
+    static final int   MAX_WITH_DRAW = -10000;
+
+
     @Autowired
     private ClientAccountRepository client;
 
@@ -36,6 +41,9 @@ public class AccountServices {
 
         return client.findAllByClient_ClientId(id);
     }
+
+
+
 
     //Used
     //Get a list of all transactional account from a users
@@ -74,45 +82,6 @@ public class AccountServices {
                 .collect(Collectors.toList());
         return sortAccounts;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     /////////////////////// Get All Currency for a User
     public List<ClientAccount> getForCurrenyAccounts(int id){
@@ -196,14 +165,15 @@ public class AccountServices {
 
 
 
-    //
-    public ClientAccount makeWithDrawal(int atm_id, int client_id, String account,double amount) {
+
+    public ClientAccount makeWithDrawal(int atm_id, int client_id, String account,double amount) throws ATMException {
         ClientAccount clientAccountCl = client.findByClientAccountNumberAndClient_ClientId(account, client_id);
         Atm atm = atmRepo.findById(atm_id).get();
+
         if(clientAccountCl == null)
             {
                 System.out.println("Client account not found!!");
-
+                throw new ATMException();
             }
         else if (atm == null)
         {
@@ -222,32 +192,44 @@ public class AccountServices {
                             System.out.println("New Balance " + balance);
                             clientAccountCl.setDisplayBalance(balance);
                             clientAccountCl.setRandValue(balance);
-                            System.out.println("Update the details");
+                            //System.out.println("Update the details");
                             client.save(clientAccountCl);
-                        }//check if account is cheque and balance is less than -10000
-                        else if (clientAccountCl.getDisplayBalance() < amount)
+                        }
+
+//                        if(amount > clientAccountCl.getDisplayBalance())
+//                        {
+//
+//                        }
+                    double balance = clientAccountCl.getDisplayBalance() - amount;
+                        double postiveNumber =  Math.abs(balance);
+                        System.out.println(clientAccountCl.getDisplayBalance() - amount);
+                        if(MAX_WITH_DRAW <=  clientAccountCl.getDisplayBalance() - amount )
                             if (clientAccountCl.getAccountType().getAccountTypeCode().equalsIgnoreCase("CHQ"))
-                            {
-                                if (clientAccountCl.getDisplayBalance() <= -10000)
-                                    if (amount - clientAccountCl.getDisplayBalance() == -10000) {
-                                        double balance = clientAccountCl.getDisplayBalance() - amount;
-                                        clientAccountCl.setDisplayBalance(balance);
-                                        client.save(clientAccountCl);
-
-                                    }
-                                    else{
-                                        System.out.println("You have exceeded the limit");
-                                    }
-                            }
-                            else
-                            {
-                                System.out.println("Amount is not a cheque account");
-                            }
+                                if (checkingNotes(postiveNumber, atm_id))
+                        {
+                            //double balance = clientAccountCl.getDisplayBalance() - amount;
+                            clientAccountCl.setDisplayBalance(balance);
+                            clientAccountCl.setRandValue(balance);
+                        }
 
 
 
 
-                    }
+
+
+
+                    //check if account is cheque and balance is less than -10000
+                        //else if (amount > clientAccountCl.getDisplayBalance() )
+//                            if (clientAccountCl.getAccountType().getAccountTypeCode().equalsIgnoreCase("CHQ"))
+//                        else {
+
+
+
+                        }
+                //}
+
+
+
         return clientAccountCl;
     }
 
@@ -308,14 +290,9 @@ public class AccountServices {
             //System.out.println("Value for the if " + atmList.get(i).getDenomination().getValue());
             if(amount >= atmList.get(i).getDenomination().getValue())
             {
-
-
                 if(amount % atmList.get(i).getDenomination().getValue()== 0)
                 if(amount / atmList.get(i).getDenomination().getValue() <= atmList.get(i).getCount())
                 {
-                   // int num = (int) ((int) (atmList.get(i).getDenomination().getValue() *  atmList.get(i).getCount()) - amount);
-
-
                     System.out.println("Value : " + atmList.get(i).getDenomination().getValue() + " Count is " + atmList.get(i).getCount());
 
                     int  newCounter = (int) (amount /atmList.get(i).getDenomination().getValue());
@@ -325,7 +302,6 @@ public class AccountServices {
 
                     int newCount  =  atmList.get(i).getCount() - newCounter;
 
-
                     status = true;
                     //calculate the count that is left
                     //int co  = (int) (amount / atmList.get(i).getDenomination().getValue());
@@ -334,7 +310,6 @@ public class AccountServices {
                     //count  = atmList.get(i).getCount() - Math.floor(calculatedCount);
                     atmList.get(i).setCount(newCount);
                     System.out.println("New count : " + newCount + " of : " + atmList.get(i).getDenomination().getValue());
-
                     break;
                 }
                 else {
@@ -342,25 +317,13 @@ public class AccountServices {
                     count = atmList.get(i).getCount()-1;
                     atmList.get(i).setCount(count);
                     status = true;
-
                 }
-
-
             }
-
-
         }
-
-
-
 
         if(amount == 0)
         {
             status = true;
-        }
-        else if(amount >0)
-        {
-            System.out.println("Atm does not have enough notes");
         }
         saveATmLocationCount(status,amount,atm_id);
         return status;
@@ -408,7 +371,8 @@ public class AccountServices {
                             atmList.get(i).setCount(newCount);
 
                             atmAllocationRepository.save(atmList.get(i));
-                            break;
+
+                            System.out.println("Save");
                         }
                         else {
                             amount = amount - atmList.get(i).getDenomination().getValue();
@@ -416,6 +380,7 @@ public class AccountServices {
                             atmList.get(i).setCount(count);
 
                             status = true;
+                            System.out.println("Save");
                             atmAllocationRepository.save(atmList.get(i));
                         }
 
