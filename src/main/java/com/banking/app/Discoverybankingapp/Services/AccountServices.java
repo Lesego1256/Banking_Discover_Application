@@ -163,7 +163,7 @@ public class AccountServices {
         {
             System.out.println("No accounts to display");
         }
-        //To sort based on the calculated rand value!
+        //To sort based on the calculated rand value
         accountsCurrency = sortCurrencylAccs(accountsCurrency);
 
 
